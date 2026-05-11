@@ -31,15 +31,34 @@ jobs:
           command: |
             git config --global user.email "circleci@example.com"
             git config --global user.name "CircleCI"
-            
-            # SSHではなくHTTPS（トークン）を使って強制的に出荷する命令
-            # これにより「Permission denied (publickey)」というエラーを回避します
             npx gh-pages -d build -r https://${GITHUB_TOKEN}@github.com/skepsishey-spec/nanohana.git -b gh-pages -f
+
+  test:
+    docker:
+      - image: cimg/node:18.17.0-browsers
+    working_directory: ~/project
+    steps:
+      - checkout
+      - run:
+          name: "Install dependencies"
+          command: npm install
+      - run:
+          name: "Run Playwright tests"
+          command: |
+            mkdir test-results
+            pnpm run serve &
+            TESTFILES=$(circleci tests glob "specs/e2e/**/*.spec.ts")
+            echo "$TESTFILES" | circleci tests run --command="xargs pnpm playwright test --config=playwright.config.ci.ts --reporter=junit" --verbose --split-by=timings
+      - store_test_results:
+          path: test-results
 
 workflows:
   build_and_deploy:
     jobs:
       - build
-      - deploy:
+      - test:
           requires:
             - build
+      - deploy:
+          requires:
+            - test
