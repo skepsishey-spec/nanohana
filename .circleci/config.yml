@@ -1,0 +1,45 @@
+version: 2.1
+
+jobs:
+  build:
+    docker:
+      - image: cimg/node:18.17.0
+    working_directory: ~/project
+    steps:
+      - checkout
+      - run:
+          name: "準備（インストール）"
+          command: npm install
+      - run:
+          name: "組み立て（ビルド）"
+          command: npm run build
+      - persist_to_workspace:
+          root: .
+          paths:
+            - build
+
+  deploy:
+    docker:
+      - image: cimg/node:18.17.0
+    working_directory: ~/project
+    steps:
+      - checkout
+      - attach_workspace:
+          at: .
+      - run:
+          name: "GitHub Pagesへ公開（トークン認証）"
+          command: |
+            git config --global user.email "circleci@example.com"
+            git config --global user.name "CircleCI"
+            
+            # SSHではなくHTTPS（トークン）を使って強制的に出荷する命令
+            # これにより「Permission denied (publickey)」というエラーを回避します
+            npx gh-pages -d build -r https://${GITHUB_TOKEN}@github.com/skepsishey-spec/nanohana.git -b gh-pages -f
+
+workflows:
+  build_and_deploy:
+    jobs:
+      - build
+      - deploy:
+          requires:
+            - build

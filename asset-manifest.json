@@ -1,0 +1,13 @@
+{
+  "files": {
+    "main.css": "/nanohana/static/css/main.f5b21c72.css",
+    "main.js": "/nanohana/static/js/main.608a044e.js",
+    "index.html": "/nanohana/index.html",
+    "main.f5b21c72.css.map": "/nanohana/static/css/main.f5b21c72.css.map",
+    "main.608a044e.js.map": "/nanohana/static/js/main.608a044e.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.f5b21c72.css",
+    "static/js/main.608a044e.js"
+  ]
+}
