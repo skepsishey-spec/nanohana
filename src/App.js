@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, } from 'react';
 import { Play, RotateCcw, Check, Star } from 'lucide-react';
 
 // === 教員＆SEからのコメント ===
