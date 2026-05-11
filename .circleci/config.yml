@@ -27,10 +27,13 @@ jobs:
       - attach_workspace:
           at: .
       - run:
-          name: "GitHub Pagesへ公開"
+          name: "GitHub Pagesへ公開（トークン認証）"
           command: |
             git config --global user.email "circleci@example.com"
             git config --global user.name "CircleCI"
+            
+            # SSHではなくHTTPS（トークン）を使って強制的に出荷する命令
+            # これにより「Permission denied (publickey)」というエラーを回避します
             npx gh-pages -d build -r https://${GITHUB_TOKEN}@github.com/skepsishey-spec/nanohana.git -b gh-pages -f
 
 workflows:
